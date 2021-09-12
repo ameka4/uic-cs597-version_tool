@@ -1,0 +1,17 @@
+{
+  "repo_url": "https://gitbox.apache.org/repos/asf/commons-cli.git",
+  "project_name": "CLI-193",
+  "old_version": {
+    "commit_id":  "636fac44643c497373b747097bd46b457bddbc8e",
+    "maven_build_version": 11
+  },
+  "new_version": {
+    "commit_id": "d33c73f9d8cd8c6ae93f016596aad11351a8afce",
+    "maven_build_version": 11
+  },
+  "test": {
+    "type": "bug_fix",
+    "file": "src/test/java/org/apache/commons/cli/HelpFormatterTest.java",
+    "target_folder": "src/test/org/apache/commons/cli/HelpFormatterTest.java"
+  }
+}

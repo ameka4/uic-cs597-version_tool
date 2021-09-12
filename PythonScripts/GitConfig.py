@@ -1,0 +1,147 @@
+'''
+Loads repository information from a json file.
+Clones two versions of a project from a repository.
+Builds both versions and copies tests cases for regression and bug fix issues.
+@author: Alekh Meka <alekhmeka@gmail.com>
+'''
+import re
+import subprocess
+import os
+import json
+from shutil import copyfile
+
+class VersionTool:
+    """
+    Used to maintain all repository and commit information pertaining to the two versions of a project
+    Generates a project folder that contains "oldVersion" and "newVersion"
+    Each corresponding version folder contains the repository at a particular commit
+    Builds both versions of the project after making changes to the pom.xml file
+    """
+    def __init__(self, repo_str, project_name, cwd, old_version_commit, old_version_build, new_version_commit, new_version_build, test_type, test_file, target_folder):
+        self.repo_str = repo_str
+        self.project_name = project_name
+        self.old_version_directory = cwd + "/" + self.project_name + "/oldVersion/"
+        self.old_version_commit = old_version_commit
+        self.old_version_build = old_version_build
+        self.new_version_directory = cwd + "/" + self.project_name + "/newVersion/"
+        self.new_version_commit = new_version_commit
+        self.new_version_build = new_version_build
+        self.test_type = test_type
+        self.test_file = test_file
+        self.target_folder = target_folder
+        self.repo_name = self.obtainRepoName()
+
+    def obtainRepoName(self):
+        """
+        Strips the repository url so that we obtain the name
+        :return: No return value - Updates self.repo_name in __init__
+        """
+        repo_len = len(self.repo_str)
+        index = 0
+        for i in reversed(range(0, repo_len)):
+            if self.repo_str[i] == '/':
+                index = i
+                break
+        repo_name = self.repo_str[index + 1:-4] + "/"
+        return repo_name
+
+    def createFolders(self):
+        """
+        Creates folders pertaining the two versions of the repository
+        project_name specified in the .json will be the name of the root directory
+        :return: No return value - Updates the file hierarchy
+        """
+        try:
+            os.mkdir(self.project_name)
+            oldVersion = self.project_name + "/oldVersion/"
+            newVersion = self.project_name + "/newVersion/"
+            os.mkdir(oldVersion)
+            os.mkdir(newVersion)
+        except FileExistsError as e:
+            print("Folder already exists! Please change 'project_name' in .json to create a new folder!")
+            print(e.args)
+            exit(0)
+
+    def cloneRepos(self):
+        """
+        Clones the repositories by using synchronous method calls in shell
+        Loads both versions into two different directories at commit specified
+        :return: No return value - Repositories are generated in corresponding version folders
+        """
+        subprocess.call(["git", "clone", self.repo_str], cwd=self.old_version_directory)
+        subprocess.call(["git", "checkout", self.old_version_commit], cwd=self.old_version_directory + self.repo_name)
+        subprocess.call(["git", "clone", self.repo_str], cwd=self.new_version_directory)
+        subprocess.call(["git", "checkout", self.new_version_commit], cwd=self.new_version_directory + self.repo_name)
+
+
+    def fixMavenCompileSourceAndTarget(self):
+        """
+        Fixes the "maven.compile.source" and "maven.compile.target" issue when building a project
+        Updates the source and target to the maven_build_version specified in the .json
+        Saves and writes new pom.xml files into corresponding repositories
+        :return: No return value - pom.xml file modified
+        """
+        with open(self.old_version_directory + self.repo_name + "pom.xml", 'r') as file:
+            filedata = file.read()
+        new_file_data = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compile.source>' + str(self.old_version_build) + '</maven.compile.source>', filedata)
+        new_file_data = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compile.target>' + str(self.old_version_build) + '</maven.compile.target>', new_file_data)
+        with open(self.old_version_directory + self.repo_name + "pom.xml", 'w') as file:
+            file.write(new_file_data)
+
+        with open(self.new_version_directory + self.repo_name + "pom.xml", 'r') as f:
+            fd = f.read()
+        new_fd = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compile.source>'+ str(self.new_version_build) + '</maven.compile.source>', fd)
+        new_fd = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compile.target>'+ str(self.new_version_build) + '</maven.compile.target>', new_fd)
+        with open(self.new_version_directory + self.repo_name + "pom.xml", 'w') as f:
+            f.write(new_fd)
+
+    def buildOldVersion(self):
+        subprocess.call(["mvn", "install"], cwd=self.old_version_directory + self.repo_name, shell=True)
+
+    def buildNewVersion(self):
+        subprocess.call(["mvn", "install"], cwd=self.new_version_directory + self.repo_name, shell=True)
+
+
+    def copyTestCase(self):
+        """
+        WARNING: NOT IMPLEMENTED PROPERLY
+        Copies the test case from the old version to the new version on regression and vice versa for bug_fix
+        ISSUE: Different versions of the repository will require alternative testing features
+        Example: Commons-CLI-1.2 does not require the @Test annotation for the test cases
+        CLI-1.3 requires the @Test annotation, thus we cannot copy a bug fix test from 1.3 -> 1.2 without modifying the file
+        :return:
+        """
+        if self.test_type == "bug_fix":
+            test_path = self.new_version_directory + self.repo_name + self.test_file
+            target_test_path = self.old_version_directory + self.repo_name + self.target_folder
+            copyfile(test_path, target_test_path)
+        elif self.test_type == "regression":
+            test_path = self.old_version_directory + self.repo_name + self.test_file
+            target_test_path = self.new_version_directory + self.repo_name + self.target_folder
+            copyfile(test_path, target_test_path)
+        else:
+            raise Exception("Invalid Test Type Provided!")
+
+
+def loadData():
+    """
+    Loads data from the json file specified.
+    :return: VersionTool object with repository/commit information
+    """
+    file = open("config.json",)
+    data = json.load(file)
+    return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"],
+                       data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
+
+
+def main():
+    vt = loadData()
+    vt.createFolders()
+    vt.cloneRepos()
+    vt.fixMavenCompileSourceAndTarget()
+    vt.buildOldVersion()
+    vt.buildNewVersion()
+    #vt.copyTestCase()
+
+main()
+
