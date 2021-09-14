@@ -90,8 +90,8 @@ class VersionTool:
 
         with open(self.new_version_directory + self.repo_name + "pom.xml", 'r') as f:
             fd = f.read()
-        new_fd = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compile.source>'+ str(self.new_version_build) + '</maven.compile.source>', fd)
-        new_fd = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compile.target>'+ str(self.new_version_build) + '</maven.compile.target>', new_fd)
+        new_fd = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compiler.source>'+ str(self.new_version_build) + '</maven.compiler.source>', fd)
+        new_fd = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compiler.target>'+ str(self.new_version_build) + '</maven.compiler.target>', new_fd)
         with open(self.new_version_directory + self.repo_name + "pom.xml", 'w') as f:
             f.write(new_fd)
 
