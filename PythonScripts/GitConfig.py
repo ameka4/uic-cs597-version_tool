@@ -125,10 +125,10 @@ class VersionTool:
 
 def loadData():
     """
-    Loads data from the json file specified.
+    Loads data from the json file specified. Each json file pertains to a different bug fix/regression raised.
     :return: VersionTool object with repository/commit information
     """
-    file = open("config.json",)
+    file = open("ApacheCommonsCLI193.json", )
     data = json.load(file)
     return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"],
                        data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
@@ -142,6 +142,7 @@ def main():
     vt.buildOldVersion()
     vt.buildNewVersion()
     #vt.copyTestCase()
+
 
 main()
 
