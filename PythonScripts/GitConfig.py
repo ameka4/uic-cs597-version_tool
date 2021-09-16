@@ -138,7 +138,7 @@ def main():
     vt = loadData()
     vt.createFolders()
     vt.cloneRepos()
-    vt.fixMavenCompileSourceAndTarget()
+    #vt.fixMavenCompileSourceAndTarget()
     vt.buildOldVersion()
     vt.buildNewVersion()
     #vt.copyTestCase()
