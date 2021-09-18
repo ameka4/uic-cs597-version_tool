@@ -9,6 +9,8 @@ import subprocess
 import os
 import json
 from shutil import copyfile
+from sys import platform
+from pathlib import Path
 
 class VersionTool:
     """
@@ -123,25 +125,49 @@ class VersionTool:
             raise Exception("Invalid Test Type Provided!")
 
 
+def configureJava8Dependancy():
+    """
+    Sets the JAVA_HOME environmental variable to jdk1.8.* only during execution of this script.
+    Linux : TODO
+    Windows : Assumes that the jdk installation is found in C:/Program Files/Java
+    If installation is not found, an exception is raised.
+    """
+    if "JAVA_HOME" in os.environ and "jdk1.8" in os.environ["JAVA_HOME"]:  # jdk1.8.* is already set as JAVA_HOME env variable
+        return True
+    if platform == "linux" or platform == "linux2":  # linux
+        raise Exception("LinuxOS Logic: Not implemented yet!")
+    elif platform == "win32" or platform == "win64":  # windows
+        p = Path("C:/Program Files/Java/")
+        javaFolderPaths = [x for x in p.iterdir() if x.is_dir()]  # Obtain list of possible paths in 'Java' directory
+        jdk8 = None
+        for folder in javaFolderPaths:
+            m = re.search("jdk1.8.*", str(folder))  # Regex to find jdk1.8
+            if m is not None:
+                jdk8 = m.string  # Found a match so we set jdk8
+        if jdk8 is not None:
+            os.environ["JAVA_HOME"] = jdk8  # Valid version of jdk1.8 found so we set the env variable
+            return True
+        raise Exception("jdk1.8 is not installed in C:/Program Files/Java")  # Did not find a compatible version
+
+
 def loadData():
     """
     Loads data from the json file specified. Each json file pertains to a different bug fix/regression raised.
     :return: VersionTool object with repository/commit information
     """
-    file = open("ApacheCommonsCLI193.json", )
+    file = open("ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
     data = json.load(file)
     return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"],
                        data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
 
 
 def main():
+    configureJava8Dependancy()
     vt = loadData()
     vt.createFolders()
     vt.cloneRepos()
-    #vt.fixMavenCompileSourceAndTarget()
     vt.buildOldVersion()
     vt.buildNewVersion()
-    #vt.copyTestCase()
 
 
 main()
