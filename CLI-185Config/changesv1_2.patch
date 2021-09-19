@@ -1,21 +1,18 @@
 diff --git a/src/test/org/apache/commons/cli/ParserTestCase.java b/src/test/org/apache/commons/cli/ParserTestCase.java
-index 53781a3..0e3c633 100644
+index 53781a3..e05bdce 100644
 --- a/src/test/org/apache/commons/cli/ParserTestCase.java
 +++ b/src/test/org/apache/commons/cli/ParserTestCase.java
-@@ -303,4 +303,16 @@ public abstract class ParserTestCase extends TestCase
+@@ -303,4 +303,13 @@ public abstract class ParserTestCase extends TestCase
          assertEquals("Should be 1 arg left",1,argsleft.size());
          assertEquals("Expecting foo","foo",argsleft.get(0));
      }
-+    
 +    public void testLeadingAndTrailingQuotes() throws Exception
 +    {
-+        if (!parser.getClass().equals(DefaultParser.class)) {
-+            String[] args = new String[]{"--balloo", "this is a \"test\""};
-+            Options options = new Options();
-+            options.addOption(OptionBuilder.hasArgs().create("balloo"));
-+            CommandLine cl = parser.parse(options, args);
-+            String[] arr = cl.getOptionValues("balloo");
-+            assertTrue("Test Message should be \"this is a \"test\"\"", arr[0].equals("this is a \"test\""));
-+        }
++        String[] args = new String[]{"--balloo", "this is a \"test\""};
++        Options options = new Options();
++        options.addOption(OptionBuilder.hasArgs().create("balloo"));
++        CommandLine cl = parser.parse(options, args);
++        String[] arr = cl.getOptionValues("balloo");
++        assertTrue("Test Message should be \"this is a \"test\"\"", arr[0].equals("this is a \"test\""));
 +    }
  }
