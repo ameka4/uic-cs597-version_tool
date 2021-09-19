@@ -3,11 +3,13 @@
   "project_name": "CLI-193",
   "old_version": {
     "commit_id":  "636fac44643c497373b747097bd46b457bddbc8e",
-    "maven_build_version": 11
+    "maven_build_version": 11,
+    "patch": "CLI-193Config/changes.patch"
   },
   "new_version": {
     "commit_id": "d33c73f9d8cd8c6ae93f016596aad11351a8afce",
-    "maven_build_version": 11
+    "maven_build_version": 11,
+    "patch": "None"
   },
   "test": {
     "type": "bug_fix",

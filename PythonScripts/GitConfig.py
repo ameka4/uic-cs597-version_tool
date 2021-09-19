@@ -19,15 +19,17 @@ class VersionTool:
     Each corresponding version folder contains the repository at a particular commit
     Builds both versions of the project after making changes to the pom.xml file
     """
-    def __init__(self, repo_str, project_name, cwd, old_version_commit, old_version_build, new_version_commit, new_version_build, test_type, test_file, target_folder):
+    def __init__(self, repo_str, project_name, cwd, old_version_commit, old_version_build, old_version_patch, new_version_commit, new_version_build, new_version_patch, test_type, test_file, target_folder):
         self.repo_str = repo_str
         self.project_name = project_name
         self.old_version_directory = cwd + "/" + self.project_name + "/oldVersion/"
         self.old_version_commit = old_version_commit
         self.old_version_build = old_version_build
+        self.old_version_patch = old_version_patch
         self.new_version_directory = cwd + "/" + self.project_name + "/newVersion/"
         self.new_version_commit = new_version_commit
         self.new_version_build = new_version_build
+        self.new_version_patch = new_version_patch
         self.test_type = test_type
         self.test_file = test_file
         self.target_folder = target_folder
@@ -75,6 +77,24 @@ class VersionTool:
         subprocess.call(["git", "clone", self.repo_str], cwd=self.new_version_directory)
         subprocess.call(["git", "checkout", self.new_version_commit], cwd=self.new_version_directory + self.repo_name)
 
+    def applyPatches(self):
+        """
+        Applies bug_fix or regression test case to corresponding alternate version.
+        Bug_fix implies that the patch is applied to old version.
+        Regression implies that the patch is applied to the new version.
+        Once the patch has been applied, one of the versions will fail when building because of the failing test case.
+        """
+        if platform == "win32" or platform == "win64":
+            if self.old_version_patch != "None":
+                directoryPath = "--directory=" + "PythonScripts/" + self.project_name + "/oldVersion/" + self.repo_name
+                cmd = "powershell -Command Get-Content " + self.old_version_patch + " | " + "git apply " + directoryPath
+                subprocess.call(cmd, shell=True)
+            elif self.new_version_patch != "None":
+                directoryPath = "--directory=" + "PythonScripts/" + self.project_name + "/newVersion/" + self.repo_name
+                cmd = "powershell -Command Get-Content " + self.new_version_patch + " | " + "git apply " + directoryPath
+                subprocess.call(cmd, shell=True)
+        elif platform == "linux" or platform == "linux2":
+            raise Exception("LinuxOS Logic: Not implemented yet!")
 
     def fixMavenCompileSourceAndTarget(self):
         """
@@ -155,10 +175,10 @@ def loadData():
     Loads data from the json file specified. Each json file pertains to a different bug fix/regression raised.
     :return: VersionTool object with repository/commit information
     """
-    file = open("ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
+    file = open("CLI-193Config/ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
     data = json.load(file)
-    return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"],
-                       data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
+    return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"], data["old_version"]["patch"],
+                       data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["new_version"]["patch"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
 
 
 def main():
@@ -166,6 +186,7 @@ def main():
     vt = loadData()
     vt.createFolders()
     vt.cloneRepos()
+    vt.applyPatches()
     vt.buildOldVersion()
     vt.buildNewVersion()
 
