@@ -4,17 +4,10 @@
   "description": "Use Case Description\n---------------------\nCLI-193 addresses a bug fix between version 1.2 and 1.3.\n'testRenderWrappedTextWord' is found in the HelpFormatterTest in V1.3. \nThis test case is added to V1.2 before building the project.",
   "old_version": {
     "commit_id":  "636fac44643c497373b747097bd46b457bddbc8e",
-    "maven_build_version": 11,
     "patch": "CLI-193Config/changes.patch"
   },
   "new_version": {
     "commit_id": "d33c73f9d8cd8c6ae93f016596aad11351a8afce",
-    "maven_build_version": 11,
     "patch": "None"
-  },
-  "test": {
-    "type": "bug_fix",
-    "file": "src/test/java/org/apache/commons/cli/HelpFormatterTest.java",
-    "target_folder": "src/test/org/apache/commons/cli/HelpFormatterTest.java"
   }
 }

@@ -19,21 +19,16 @@ class VersionTool:
     Each corresponding version folder contains the repository at a particular commit
     Builds both versions of the project after making changes to the pom.xml file
     """
-    def __init__(self, repo_str, project_name, description, cwd, old_version_commit, old_version_build, old_version_patch, new_version_commit, new_version_build, new_version_patch, test_type, test_file, target_folder):
+    def __init__(self, repo_str, project_name, description, cwd, old_version_commit, old_version_patch, new_version_commit, new_version_patch):
         self.repo_str = repo_str
         self.project_name = project_name
         self.description = description
         self.old_version_directory = cwd + "/" + self.project_name + "/oldVersion/"
         self.old_version_commit = old_version_commit
-        self.old_version_build = old_version_build
         self.old_version_patch = old_version_patch
         self.new_version_directory = cwd + "/" + self.project_name + "/newVersion/"
         self.new_version_commit = new_version_commit
-        self.new_version_build = new_version_build
         self.new_version_patch = new_version_patch
-        self.test_type = test_type
-        self.test_file = test_file
-        self.target_folder = target_folder
         self.repo_name = self.obtainRepoName()
 
     def obtainRepoName(self):
@@ -136,8 +131,8 @@ def loadData():
     """
     file = open("CLI-193Config/ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
     data = json.load(file)
-    return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"], data["old_version"]["patch"],
-                       data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["new_version"]["patch"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
+    return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"],  data["old_version"]["patch"],
+                       data["new_version"]["commit_id"], data["new_version"]["patch"])
 
 
 def main():
