@@ -82,20 +82,20 @@ class VersionTool:
         """
         if platform == "linux" or platform == "linux2":
             if self.old_version_patch != "None":
-                directoryPath = "PythonScripts/" + self.project_name + "/oldVersion/" + self.repo_name
+                directoryPath = self.project_name + "/oldVersion/" + self.repo_name
                 cmd = "patch -d " + directoryPath + "<" + self.old_version_patch
                 subprocess.call(cmd, shell=True)
             if self.new_version_patch != "None":
-                directoryPath = "PythonScripts/" + self.project_name + "/newVersion/" + self.repo_name
+                directoryPath = self.project_name + "/newVersion/" + self.repo_name
                 cmd = "patch -d " + directoryPath + "<" + self.new_version_patch
                 subprocess.call(cmd, shell=True)
         elif platform == "win32" or platform == "win64":
             if self.old_version_patch != "None":
-                directoryPath = "--directory=" + "PythonScripts/" + self.project_name + "/oldVersion/" + self.repo_name
+                directoryPath = "--directory=" + self.project_name + "/oldVersion/" + self.repo_name
                 cmd = "powershell -Command Get-Content " + self.old_version_patch + " | " + "git apply " + directoryPath
                 subprocess.call(cmd, shell=True)
             if self.new_version_patch != "None":
-                directoryPath = "--directory=" + "PythonScripts/" + self.project_name + "/newVersion/" + self.repo_name
+                directoryPath = "--directory=" + self.project_name + "/newVersion/" + self.repo_name
                 cmd = "powershell -Command Get-Content " + self.new_version_patch + " | " + "git apply " + directoryPath
                 subprocess.call(cmd, shell=True)
 
