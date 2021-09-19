@@ -109,7 +109,8 @@ def configureJava8Dependancy():
     if "JAVA_HOME" in os.environ and "jdk1.8" in os.environ["JAVA_HOME"]:  # jdk1.8.* is already set as JAVA_HOME env variable
         return True
     if platform == "linux" or platform == "linux2":  # linux
-        p = Path("~/jvm/")
+        home = str(Path.home())
+        p = Path(home + "/jvm/")
         javaFolderPaths = [x for x in p.iterdir() if x.is_dir()]  # Obtain list of possible paths in 'Java' directory
         jdk8 = None
         for folder in javaFolderPaths:
