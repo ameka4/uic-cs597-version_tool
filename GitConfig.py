@@ -147,7 +147,7 @@ def loadData():
     Loads data from the json file specified. Each json file pertains to a different bug fix/regression raised.
     :return: VersionTool object with repository/commit information
     """
-    file = open("CLI-193Config/ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
+    file = open("CLI-185Config/ApacheCommonsCLI185.json", )  # Specify the json file containing all repository information
     data = json.load(file)
     return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"],  data["old_version"]["patch"],
                        data["new_version"]["commit_id"], data["new_version"]["patch"])

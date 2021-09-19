@@ -1,0 +1,22 @@
+diff --git a/src/test/java/org/apache/commons/cli/ParserTestCase.java b/src/test/java/org/apache/commons/cli/ParserTestCase.java
+index 4d91b98..fdad896 100644
+--- a/src/test/java/org/apache/commons/cli/ParserTestCase.java
++++ b/src/test/java/org/apache/commons/cli/ParserTestCase.java
+@@ -1105,4 +1105,17 @@ public abstract class ParserTestCase
+         assertTrue(cmd.hasOption("x"));
+         assertFalse(cmd.hasOption("y"));
+     }
++    
++    @Test
++    public void testLeadingAndTrailingQuotes() throws Exception
++    {
++        if (!parser.getClass().equals(DefaultParser.class)) {
++            String[] args = new String[]{"--balloo", "this is a \"test\""};
++            Options options = new Options();
++            options.addOption(OptionBuilder.hasArgs().create("balloo"));
++            CommandLine cl = parser.parse(options, args);
++            String[] arr = cl.getOptionValues("balloo");
++            assertTrue("Test Message should be \"this is a \"test\"\"", arr[0].equals("this is a \"test\""));
++        }
++    }
+ }
