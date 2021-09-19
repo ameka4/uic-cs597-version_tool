@@ -19,9 +19,10 @@ class VersionTool:
     Each corresponding version folder contains the repository at a particular commit
     Builds both versions of the project after making changes to the pom.xml file
     """
-    def __init__(self, repo_str, project_name, cwd, old_version_commit, old_version_build, old_version_patch, new_version_commit, new_version_build, new_version_patch, test_type, test_file, target_folder):
+    def __init__(self, repo_str, project_name, description, cwd, old_version_commit, old_version_build, old_version_patch, new_version_commit, new_version_build, new_version_patch, test_type, test_file, target_folder):
         self.repo_str = repo_str
         self.project_name = project_name
+        self.description = description
         self.old_version_directory = cwd + "/" + self.project_name + "/oldVersion/"
         self.old_version_commit = old_version_commit
         self.old_version_build = old_version_build
@@ -96,53 +97,11 @@ class VersionTool:
         elif platform == "linux" or platform == "linux2":
             raise Exception("LinuxOS Logic: Not implemented yet!")
 
-    def fixMavenCompileSourceAndTarget(self):
-        """
-        Fixes the "maven.compile.source" and "maven.compile.target" issue when building a project
-        Updates the source and target to the maven_build_version specified in the .json
-        Saves and writes new pom.xml files into corresponding repositories
-        :return: No return value - pom.xml file modified
-        """
-        with open(self.old_version_directory + self.repo_name + "pom.xml", 'r') as file:
-            filedata = file.read()
-        new_file_data = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compile.source>' + str(self.old_version_build) + '</maven.compile.source>', filedata)
-        new_file_data = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compile.target>' + str(self.old_version_build) + '</maven.compile.target>', new_file_data)
-        with open(self.old_version_directory + self.repo_name + "pom.xml", 'w') as file:
-            file.write(new_file_data)
-
-        with open(self.new_version_directory + self.repo_name + "pom.xml", 'r') as f:
-            fd = f.read()
-        new_fd = re.sub('<maven.compile[r]?.source>\d*[.]\d*</maven.compile[r]?.source>', '<maven.compiler.source>'+ str(self.new_version_build) + '</maven.compiler.source>', fd)
-        new_fd = re.sub('<maven.compile[r]?.target>\d*[.]\d*</maven.compile[r]?.target>', '<maven.compiler.target>'+ str(self.new_version_build) + '</maven.compiler.target>', new_fd)
-        with open(self.new_version_directory + self.repo_name + "pom.xml", 'w') as f:
-            f.write(new_fd)
-
     def buildOldVersion(self):
         subprocess.call(["mvn", "install"], cwd=self.old_version_directory + self.repo_name, shell=True)
 
     def buildNewVersion(self):
         subprocess.call(["mvn", "install"], cwd=self.new_version_directory + self.repo_name, shell=True)
-
-
-    def copyTestCase(self):
-        """
-        WARNING: NOT IMPLEMENTED PROPERLY
-        Copies the test case from the old version to the new version on regression and vice versa for bug_fix
-        ISSUE: Different versions of the repository will require alternative testing features
-        Example: Commons-CLI-1.2 does not require the @Test annotation for the test cases
-        CLI-1.3 requires the @Test annotation, thus we cannot copy a bug fix test from 1.3 -> 1.2 without modifying the file
-        :return:
-        """
-        if self.test_type == "bug_fix":
-            test_path = self.new_version_directory + self.repo_name + self.test_file
-            target_test_path = self.old_version_directory + self.repo_name + self.target_folder
-            copyfile(test_path, target_test_path)
-        elif self.test_type == "regression":
-            test_path = self.old_version_directory + self.repo_name + self.test_file
-            target_test_path = self.new_version_directory + self.repo_name + self.target_folder
-            copyfile(test_path, target_test_path)
-        else:
-            raise Exception("Invalid Test Type Provided!")
 
 
 def configureJava8Dependancy():
@@ -177,7 +136,7 @@ def loadData():
     """
     file = open("CLI-193Config/ApacheCommonsCLI193.json", )  # Specify the json file containing all repository information
     data = json.load(file)
-    return VersionTool(data["repo_url"], data["project_name"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"], data["old_version"]["patch"],
+    return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"], data["old_version"]["maven_build_version"], data["old_version"]["patch"],
                        data["new_version"]["commit_id"], data["new_version"]["maven_build_version"], data["new_version"]["patch"], data["test"]["type"], data["test"]["file"], data["test"]["target_folder"])
 
 
@@ -189,6 +148,7 @@ def main():
     vt.applyPatches()
     vt.buildOldVersion()
     vt.buildNewVersion()
+    print(vt.description)
 
 
 main()
