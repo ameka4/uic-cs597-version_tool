@@ -93,10 +93,10 @@ class VersionTool:
             raise Exception("LinuxOS Logic: Not implemented yet!")
 
     def buildOldVersion(self):
-        subprocess.call(["mvn", "install"], cwd=self.old_version_directory + self.repo_name, shell=True)
+        subprocess.call("mvn install", cwd=self.old_version_directory + self.repo_name, shell=True)
 
     def buildNewVersion(self):
-        subprocess.call(["mvn", "install"], cwd=self.new_version_directory + self.repo_name, shell=True)
+        subprocess.call("mvn install", cwd=self.new_version_directory + self.repo_name, shell=True)
 
 
 def configureJava8Dependancy():
@@ -148,13 +148,13 @@ def loadData():
 
 def main():
     configureJava8Dependancy()
-    #vt = loadData()
-    #vt.createFolders()
-    #vt.cloneRepos()
-    #vt.applyPatches()
-    #vt.buildOldVersion()
-    #vt.buildNewVersion()
-    #print(vt.description)
+    vt = loadData()
+    vt.createFolders()
+    vt.cloneRepos()
+    vt.applyPatches()
+    vt.buildOldVersion()
+    vt.buildNewVersion()
+    print(vt.description)
 
 
 main()
