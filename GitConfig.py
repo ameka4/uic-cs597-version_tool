@@ -83,11 +83,11 @@ class VersionTool:
         if platform == "linux" or platform == "linux2":
             if self.old_version_patch != "None":
                 directoryPath = self.project_name + "/oldVersion/" + self.repo_name
-                cmd = "patch -d " + directoryPath + "<" + self.old_version_patch
+                cmd = "patch -p1 -d " + directoryPath + "<" + self.old_version_patch
                 subprocess.call(cmd, shell=True)
             if self.new_version_patch != "None":
                 directoryPath = self.project_name + "/newVersion/" + self.repo_name
-                cmd = "patch -d " + directoryPath + "<" + self.new_version_patch
+                cmd = "patch -p1 -d " + directoryPath + "<" + self.new_version_patch
                 subprocess.call(cmd, shell=True)
         elif platform == "win32" or platform == "win64":
             if self.old_version_patch != "None":
