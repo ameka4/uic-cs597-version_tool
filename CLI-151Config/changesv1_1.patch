@@ -1,0 +1,27 @@
+diff --git a/src/test/org/apache/commons/cli/HelpFormatterTest.java b/src/test/org/apache/commons/cli/HelpFormatterTest.java
+index 5b8fbf3..6c66291 100644
+--- a/src/test/org/apache/commons/cli/HelpFormatterTest.java
++++ b/src/test/org/apache/commons/cli/HelpFormatterTest.java
+@@ -196,5 +196,21 @@ public class HelpFormatterTest extends TestCase
+         printWriter.close();
+         assertEquals("usage: app [-a] [-b] [-c]" + EOL, bytesOut.toString());
+     }
+-
++    
++    public void testRenderWrappedTextMultiLinePadded()
++    {
++        // multi-line padded text
++        int width = 16;
++        int padding = 4;
++        String text = "aaaa aaaa aaaa" + EOL +
++                      "aaaaaa" + EOL +
++                      "aaaaa";
++        String expected = "aaaa aaaa aaaa" + EOL +
++                          "    aaaaaa" + EOL +
++                          "    aaaaa";
++        
++        StringBuffer sb = new StringBuffer();
++        new HelpFormatter().renderWrappedText(sb, width, padding, text);
++        assertEquals("multi-line padded text", expected, sb.toString());
++    }
+ }
