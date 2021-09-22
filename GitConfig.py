@@ -19,16 +19,18 @@ class VersionTool:
     Each corresponding version folder contains the repository at a particular commit
     Builds both versions of the project after making changes to the pom.xml file
     """
-    def __init__(self, repo_str, project_name, description, cwd, old_version_commit, old_version_patch, new_version_commit, new_version_patch):
+    def __init__(self, repo_str, project_name, description, cwd, old_version_commit, old_version_patch, old_version_build, new_version_commit, new_version_patch, new_version_build):
         self.repo_str = repo_str
         self.project_name = project_name
         self.description = description
         self.old_version_directory = cwd + "/" + self.project_name + "/oldVersion/"
         self.old_version_commit = old_version_commit
         self.old_version_patch = old_version_patch
+        self.old_version_build = old_version_build
         self.new_version_directory = cwd + "/" + self.project_name + "/newVersion/"
         self.new_version_commit = new_version_commit
         self.new_version_patch = new_version_patch
+        self.new_version_build = new_version_build
         self.repo_name = self.obtainRepoName()
 
     def obtainRepoName(self):
@@ -100,10 +102,22 @@ class VersionTool:
                 subprocess.call(cmd, shell=True)
 
     def buildOldVersion(self):
-        subprocess.call("mvn install", cwd=self.old_version_directory + self.repo_name, shell=True)
+        if self.old_version_build == "maven":
+            subprocess.call("mvn install", cwd=self.old_version_directory + self.repo_name, shell=True)
+        elif self.old_version_build == "ant":
+            if os.environ["ANT_HOME"]:
+                subprocess.call("ant", cwd=self.old_version_directory + self.repo_name, shell=True)
+            else:
+                raise Exception("ANT_HOME environment variable not set!")
 
     def buildNewVersion(self):
-        subprocess.call("mvn install", cwd=self.new_version_directory + self.repo_name, shell=True)
+        if self.new_version_build == "maven":
+            subprocess.call("mvn install", cwd=self.new_version_directory + self.repo_name, shell=True)
+        elif self.new_version_build == "ant":
+            if os.environ["ANT_HOME"]:
+                subprocess.call("ant", cwd=self.new_version_directory + self.repo_name, shell=True)
+            else:
+                raise Exception("ANT_HOME environment variable not set!")
 
 
 def configureJava8Dependancy():
@@ -149,8 +163,8 @@ def loadData():
     """
     file = open("CLI-185Config/ApacheCommonsCLI185.json", )  # Specify the json file containing all repository information
     data = json.load(file)
-    return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"],  data["old_version"]["patch"],
-                       data["new_version"]["commit_id"], data["new_version"]["patch"])
+    return VersionTool(data["repo_url"], data["project_name"], data["description"], os.getcwd(), data["old_version"]["commit_id"],  data["old_version"]["patch"], data["old_version"]["build"],
+                       data["new_version"]["commit_id"], data["new_version"]["patch"], data["new_version"]["build"])
 
 
 def main():

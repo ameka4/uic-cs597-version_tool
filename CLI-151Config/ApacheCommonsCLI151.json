@@ -4,10 +4,12 @@
   "description": "Use Case Description\n---------------------\nCLI-151 addresses a bug fix between version 1.1 and 1.2.\n'testRenderWrappedTextMultiLinePadded' is found in the HelpFormatterTest in V1.3. \nThis test case is added to V1.1 and V1.2 after making a modification to address the issue with truncation.\nThis test case passes in V1.2 but fails in V1.1",
   "old_version": {
     "commit_id":  "d95543de51dc1b3948fbffab0f890ad950c2d0e0",
-    "patch": "CLI-151Config/changesv1_1.patch"
+    "patch": "CLI-151Config/changesv1_1.patch",
+    "build": "ant"
   },
   "new_version": {
     "commit_id": "636fac44643c497373b747097bd46b457bddbc8e",
-    "patch": "CLI-151Config/changesv1_2.patch"
+    "patch": "CLI-151Config/changesv1_2.patch",
+    "build": "maven"
   }
 }
