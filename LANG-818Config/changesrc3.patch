@@ -1,0 +1,42 @@
+diff --git a/pom.xml b/pom.xml
+index ae23abd35..e3f9ca713 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -447,6 +447,16 @@
+ 
+   <build>
+     <plugins>
++      <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-compiler-plugin</artifactId>
++      <version>3.1</version>
++      <configuration>
++          <source>1.8</source>
++          <target>1.8</target>
++          <encoding>UTF-8</encoding>
++      </configuration>
++      </plugin>    
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+diff --git a/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java b/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+index 708db34a5..98e3f43d0 100644
+--- a/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+@@ -1590,5 +1590,16 @@ public class DateUtilsTest extends TestCase {
+     void warn(String msg) {
+         System.err.println(msg);
+     }
++
++    public void testLang818(){
++        // Always prints timezone name of machine's default timezone, ignoring TZ
++        // set on calendar, even though the printed time itself respects calendar's TZ.
++        Calendar pacificCal = Calendar.getInstance(TimeZone.getTimeZone("US/Pacific"));
++        Calendar easternCal = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
++        boolean pdtFound = FastDateFormat.getInstance("h:mma z").format(pacificCal).contains("PDT");
++        boolean edtFound = FastDateFormat.getInstance("h:mma z").format(easternCal).contains("EDT");
++        assertTrue(pdtFound);
++        assertTrue(edtFound);
++    }
+ }
+ 
