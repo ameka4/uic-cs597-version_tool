@@ -1,0 +1,18 @@
+diff --git a/src/test/org/apache/commons/lang/StringEscapeUtilsTest.java b/src/test/org/apache/commons/lang/StringEscapeUtilsTest.java
+index b0b38f975..169973805 100644
+--- a/src/test/org/apache/commons/lang/StringEscapeUtilsTest.java
++++ b/src/test/org/apache/commons/lang/StringEscapeUtilsTest.java
+@@ -399,4 +399,13 @@ public class StringEscapeUtilsTest extends TestCase {
+             fail("Threw: " + e);
+         }
+     }
++
++    public void testEscapeJavaWithSlash()
++    {
++        final String input = "String with a slash (/) in it";
++        final String expected = input;
++        final String actual = StringEscapeUtils.escapeJava( input );
++        /** * In 2.4 StringEscapeUtils.escapeJava(String) escapes '/' characters, * which are not a valid character to escape in a Java string. */
++        assertEquals( expected, actual );
++    }
+ }
