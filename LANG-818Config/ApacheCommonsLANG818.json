@@ -4,12 +4,12 @@
   "description": "Use Case Description\n---------------------\nLANG-818 addresses a regression between version 3.0 RC2 and 3.0 RC3.\n'testLang818' was created by me to identify the regression. \nIssue: Time zone always printing UTC despite other TZ parameters.\nThis test case passes in V3.0RC2 but fails in V3.0RC3",
   "old_version": {
     "commit_id":  "f468dded531a63d25b70f92a112cc38a764bccaa",
-    "patch": "LANG-818Config/changesv1_1.patch",
+    "patch": "LANG-818Config/changesrc2.patch",
     "build": "maven"
   },
   "new_version": {
     "commit_id": "d8e87279ccfe4c04f61c94742ea593185427c80c",
-    "patch": "LANG-818Config/changesv1_2.patch",
+    "patch": "LANG-818Config/changesrc3.patch",
     "build": "maven"
   }
 }

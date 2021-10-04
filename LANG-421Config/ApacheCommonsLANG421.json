@@ -4,12 +4,12 @@
   "description": "Use Case Description\n---------------------\nLANG-421 addresses a regression between version 2.3 RC3 and 2.4 RC1.\n'testEscapeJavaWithSlash' is found in the issue and as a test case in a future version. \nIssue: Forward slashes are escaping text but are not valid escape characters.\nThis test case passes in V2.3 but fails in V2.4",
   "old_version": {
     "commit_id":  "6a3b1617c312199c4dc6fad4b55bc9e47fb4f7a1",
-    "patch": "LANG-421Config/changesv1_1.patch",
+    "patch": "LANG-421Config/changesv2_3.patch",
     "build": "maven"
   },
   "new_version": {
     "commit_id": "8b5847079dff9780fbcc62fe4f07e66f902308c2",
-    "patch": "LANG-421Config/changesv1_2.patch",
+    "patch": "LANG-421Config/changesv2_4.patch",
     "build": "maven"
   }
 }
