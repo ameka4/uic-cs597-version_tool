@@ -1,0 +1,20 @@
+diff --git a/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java b/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+index 7ef0b8ab6..fa11e561d 100644
+--- a/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+@@ -1707,5 +1707,15 @@ public class DateUtilsTest {
+     void warn(final String msg) {
+         System.err.println(msg);
+     }
++    
++    @Test
++    public void testLang530() throws ParseException {
++        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
++        final Date d = new Date();
++        final String isoDateStr = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(d);
++        final Date d2 = DateUtils.parseDate(isoDateStr, new String[] { DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern() });
++        // the format loses milliseconds so have to reintroduce them
++        assertEquals("Date not equal to itself ISO formatted and parsed", d.getTime(), d2.getTime() + d.getTime() % 1000); 
++    }
+ }
+ 

@@ -4,12 +4,12 @@
   "description": "Use Case Description\n---------------------\nLANG-1116 addresses a bug fix between version 3.4 and 3.5 RC1.\n\nThis test case passes in V3.5RC1 but fails in V3.4",
   "old_version": {
     "commit_id":  "4777c3a5e4291af2420db57d008152c70c4a8f24",
-    "patch": "LANG-1116Config/changesv1_1.patch",
+    "patch": "LANG-1116Config/changesv3_4.patch",
     "build": "maven"
   },
   "new_version": {
     "commit_id": "4b2ec07989753b8f5e97cf0fdaa6cdd866ac30f5",
-    "patch": "LANG-1116Config/changesv1_2.patch",
+    "patch": "None",
     "build": "maven"
   }
 }
