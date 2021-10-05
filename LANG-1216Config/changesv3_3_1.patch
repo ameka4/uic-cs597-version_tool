@@ -1,0 +1,13 @@
+diff --git a/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java b/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+index ea895e256..56bdaf8f2 100644
+--- a/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+@@ -1186,7 +1186,7 @@ public class NumberUtilsTest {
+         compareIsNumberWithCreateNumber("-1234.5", true);
+         compareIsNumberWithCreateNumber("-.12345", true);
+         compareIsNumberWithCreateNumber("-1234E5", true);
+-        compareIsNumberWithCreateNumber("0", true);
++        compareIsNumberWithCreateNumber("0.1", true);
+         compareIsNumberWithCreateNumber("-0", true);
+         compareIsNumberWithCreateNumber("01234", true);
+         compareIsNumberWithCreateNumber("-01234", true);
