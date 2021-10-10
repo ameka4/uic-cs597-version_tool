@@ -1,0 +1,15 @@
+{
+  "repo_url": "https://github.com/JodaOrg/joda-time.git",
+  "project_name": "JODA-22",
+  "description": "Use Case Description\n---------------------\nJODA-22 addresses a bug fix.\n'testJODA22' was created to show existing issues with the Days.daysBetween method call. \nThis test case is added to both versions before building the project.",
+  "old_version": {
+    "commit_id":  "efce99164f0bbd2c70e7f9d71884a32473e02c6d",
+    "patch": "JODA-22Config/changesold.patch",
+    "build": "maven"
+  },
+  "new_version": {
+    "commit_id": "3a413d7844c22dc6ddd50bf5d0d55ff3589e47ac",
+    "patch": "JODA-22Config/changesnew.patch",
+    "build": "maven"
+  }
+}
