@@ -1,0 +1,16 @@
+diff --git a/src/test/java/org/joda/time/TestMonthDay_Basics.java b/src/test/java/org/joda/time/TestMonthDay_Basics.java
+index 38f97a7f..52341b20 100644
+--- a/src/test/java/org/joda/time/TestMonthDay_Basics.java
++++ b/src/test/java/org/joda/time/TestMonthDay_Basics.java
+@@ -741,4 +741,11 @@ public class TestMonthDay_Basics extends TestCase {
+         assertEquals(month, test.getMonthOfYear());
+         assertEquals(day, test.getDayOfMonth());
+     }
++
++    public void testJODA22(){
++        final MonthDay january1 = new MonthDay(1,1);
++        final MonthDay february29 = new MonthDay(2, 29);
++        // FAIL
++        assertEquals(59, Days.daysBetween(january1, february29).getDays());
++    }
+ }
